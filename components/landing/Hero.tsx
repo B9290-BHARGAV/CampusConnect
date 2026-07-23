@@ -1,8 +1,16 @@
+"use client";
+
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { ArrowRight, Users, CalendarDays, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function Hero() {
+  const { data: session } = useSession();
+
+  const dashboardLink =
+    session?.user?.role === "faculty" ? "/faculty" : "/student";
+
   return (
     <section className="bg-gradient-to-b from-white to-slate-100">
       <div className="mx-auto max-w-7xl px-6 py-24 text-center">
@@ -24,18 +32,29 @@ export default function Hero() {
         </p>
 
         <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <Link href="/signup">
-            <Button size="lg">
-              Get Started
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </Link>
+          {!session ? (
+            <>
+              <Link href="/signup">
+                <Button size="lg">
+                  Get Started
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
 
-          <Link href="/login">
-            <Button variant="outline" size="lg">
-              Login
-            </Button>
-          </Link>
+              <Link href="/login">
+                <Button variant="outline" size="lg">
+                  Login
+                </Button>
+              </Link>
+            </>
+          ) : (
+            <Link href={dashboardLink}>
+              <Button size="lg">
+                Go to Dashboard
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+          )}
         </div>
 
         <div className="mt-20 grid gap-8 md:grid-cols-3">
