@@ -1,13 +1,24 @@
-import Hero from "@/components/landing/Hero";
-import Features from "@/components/landing/Features";
-import Footer from "@/components/footer/Footer";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
-export default function Home() {
-  return (
-    <>
-      <Hero />
-      <Features />
-      <Footer />
-    </>
-  );
+import { authOptions } from "@/lib/auth";
+
+export default async function Home() {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect("/login");
+  }
+
+  switch (session.user.role) {
+    case "student":
+      redirect("/student");
+
+    case "faculty":
+      redirect("/faculty");
+
+
+    default:
+      redirect("/login");
+  }
 }

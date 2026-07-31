@@ -5,16 +5,33 @@ const EventSchema = new Schema(
     title: {
       type: String,
       required: true,
+      trim: true,
     },
 
     description: {
       type: String,
       required: true,
+      trim: true,
+    },
+
+    category: {
+      type: String,
+      enum: [
+        "Workshop",
+        "Seminar",
+        "Hackathon",
+        "Competition",
+        "Sports",
+        "Cultural",
+      ],
+      required: true,
+      default: "Workshop",
     },
 
     location: {
       type: String,
       required: true,
+      trim: true,
     },
 
     date: {
@@ -22,14 +39,38 @@ const EventSchema = new Schema(
       required: true,
     },
 
+    time: {
+      type: String,
+      required: true,
+    },
+
     organizer: {
       type: String,
       required: true,
+      trim: true,
+    },
+
+    capacity: {
+      type: Number,
+      required: true,
+      default: 50,
     },
 
     image: {
       type: String,
       default: "",
+    },
+
+    createdBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
+    status: {
+      type: String,
+      enum: ["Upcoming", "Completed", "Cancelled"],
+      default: "Upcoming",
     },
   },
   {
@@ -37,4 +78,6 @@ const EventSchema = new Schema(
   }
 );
 
-export default models.Event || model("Event", EventSchema);
+const Event = models.Event || model("Event", EventSchema);
+
+export default Event;
