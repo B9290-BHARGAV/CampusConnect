@@ -65,9 +65,6 @@ export default function Navbar() {
             Announcements
           </Link>
 
-          <Link href="/communities" className="transition hover:text-indigo-600">
-            Communities
-          </Link>
         </div>
 
         <UserMenu />
