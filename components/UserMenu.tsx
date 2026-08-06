@@ -85,6 +85,18 @@ export default function UserMenu() {
           </div>
 
           <div className="p-2">
+            {role === "admin" && (
+              <button
+                onClick={() => {
+                  setOpen(false);
+                  router.push("/admin");
+                }}
+                className="w-full rounded-lg px-4 py-2 text-left transition hover:bg-amber-50"
+              >
+                🛡️ Admin Panel
+              </button>
+            )}
+
             <button
               onClick={handleProfileClick}
               className="w-full rounded-lg px-4 py-2 text-left transition hover:bg-gray-100"

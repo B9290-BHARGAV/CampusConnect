@@ -11,7 +11,7 @@ export async function POST(req: Request) {
 
     const session = await getServerSession(authOptions);
 
-    if (!session || session.user.role !== "faculty") {
+    if (!session || !["faculty", "admin"].includes(session.user.role as string)) {
       return NextResponse.json(
         {
           success: false,
