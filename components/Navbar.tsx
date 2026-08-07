@@ -65,6 +65,14 @@ export default function Navbar() {
             Announcements
           </Link>
 
+          {role === "admin" && (
+            <Link
+              href="/admin/users"
+              className="rounded-lg bg-amber-100 px-3 py-1.5 text-sm font-semibold text-amber-700 transition hover:bg-amber-200"
+            >
+              Users
+            </Link>
+          )}
         </div>
 
         <UserMenu />

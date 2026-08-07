@@ -26,6 +26,13 @@ export async function POST(req: Request) {
       );
     }
 
+    // Auto-promote to admin if the email matches any in the ADMIN_EMAIL list (comma-separated)
+    const adminEmails = (process.env.ADMIN_EMAIL || "")
+      .split(",")
+      .map((e) => e.trim().toLowerCase())
+      .filter(Boolean);
+    const finalRole = adminEmails.includes(email.toLowerCase()) ? "admin" : role;
+
     // For Google users no password is sent — auto-generate a secure random one
     const rawPassword = password ?? crypto.randomBytes(32).toString("hex");
     const hashedPassword = await bcrypt.hash(rawPassword, 10);
@@ -37,7 +44,7 @@ export async function POST(req: Request) {
       if (existingUser.provider === "google") {
         existingUser.fullName = fullName;
         existingUser.password = hashedPassword;
-        existingUser.role = role;
+        existingUser.role = finalRole;
         if (enrollmentNumber) existingUser.enrollmentNumber = enrollmentNumber;
         if (department) existingUser.department = department;
         await existingUser.save();
@@ -60,7 +67,7 @@ export async function POST(req: Request) {
       fullName,
       email,
       password: hashedPassword,
-      role,
+      role: finalRole,
       enrollmentNumber: enrollmentNumber ?? "",
       department: department ?? "",
       provider: "credentials",

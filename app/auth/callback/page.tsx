@@ -34,6 +34,8 @@ export default function AuthCallbackPage() {
           router.replace("/student");
         } else if (freshRole === "faculty") {
           router.replace("/faculty");
+        } else if (freshRole === "admin") {
+          router.replace("/admin");
         }
         return;
       }
@@ -42,6 +44,8 @@ export default function AuthCallbackPage() {
         router.replace("/student");
       } else if (role === "faculty") {
         router.replace("/faculty");
+      } else if (role === "admin") {
+        router.replace("/admin");
       }
     }
 

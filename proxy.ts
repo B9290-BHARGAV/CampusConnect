@@ -23,6 +23,14 @@ export default withAuth(
       return NextResponse.redirect(new URL("/select-role", req.url));
     }
 
+    // Admin route protection — only admin can access /admin/*
+    if (pathname.startsWith("/admin")) {
+      if (role !== "admin") {
+        const redirectTo = role === "faculty" ? "/faculty" : "/student";
+        return NextResponse.redirect(new URL(redirectTo, req.url));
+      }
+    }
+
     // Student trying to access faculty pages
     if (role === "student" && pathname.startsWith("/faculty")) {
       return NextResponse.redirect(new URL("/student", req.url));
@@ -50,6 +58,7 @@ export const config = {
   matcher: [
     "/student/:path*",
     "/faculty/:path*",
+    "/admin/:path*",
     "/select-role",
   ],
 };
