@@ -1,4 +1,5 @@
-name: Deploy CampusConnect
+
+      name: Deploy CampusConnect
 
 on:
   push:
@@ -18,34 +19,33 @@ jobs:
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
         run: |
           mkdir -p ~/.ssh
-          echo "$EC2_SSH_KEY" > ~/.ssh/campusconnect_deploy_key
+          printf '%s\n' "$EC2_SSH_KEY" > ~/.ssh/campusconnect_deploy_key
           chmod 600 ~/.ssh/campusconnect_deploy_key
 
           ssh-keyscan -H "$EC2_HOST" >> ~/.ssh/known_hosts
 
           ssh -i ~/.ssh/campusconnect_deploy_key \
             -o StrictHostKeyChecking=yes \
-            "$EC2_USER@$EC2_HOST" << 'EOF'
+            "$EC2_USER@$EC2_HOST" 'bash -s' <<'EOF'
+          set -e
 
-            set -e
+          cd /home/ubuntu/CampusConnect
 
-            cd /home/ubuntu/CampusConnect
+          echo "Pulling latest code..."
+          git fetch origin main
+          git reset --hard origin/main
 
-            echo "Pulling latest code..."
-            git fetch origin main
-            git reset --hard origin/main
+          echo "Installing dependencies..."
+          npm ci
 
-            echo "Installing dependencies..."
-            npm ci
+          echo "Building Next.js..."
+          NODE_OPTIONS="--max-old-space-size=1536" npm run build
 
-            echo "Building Next.js..."
-            npm run build
+          echo "Restarting CampusConnect..."
+          pm2 restart campusconnect --update-env
 
-            echo "Restarting CampusConnect..."
-            pm2 restart campusconnect --update-env
+          echo "Saving PM2 process..."
+          pm2 save
 
-            echo "Saving PM2 process..."
-            pm2 save
-
-            echo "Deployment successful!"
-            EOF
+          echo "Deployment successful!"
+          EOF
