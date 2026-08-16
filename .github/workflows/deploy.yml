@@ -1,5 +1,4 @@
-
-      name: Deploy CampusConnect
+name: Deploy CampusConnect
 
 on:
   push:
