@@ -27,6 +27,7 @@ jobs:
             -o StrictHostKeyChecking=yes \
             "$EC2_USER@$EC2_HOST" 'bash -s' <<'EOF'
           set -e
+          export PATH="/home/ubuntu/.nvm/versions/node/v22.23.5/bin:$PATH"
 
           cd /home/ubuntu/CampusConnect
 
